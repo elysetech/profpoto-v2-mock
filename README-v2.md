@@ -1,39 +1,32 @@
-# ProfPoto v2
+# Profpoto v2
 
-## Améliorations apportées dans cette version
+Version 2 du projet Profpoto avec système de mock pour le calendrier.
 
-### 1. Correction des erreurs de permissions Firebase
+## Fonctionnalités ajoutées
 
-- Résolution de l'erreur "Missing or insufficient permissions" qui se produisait lorsque l'application tentait d'écrire dans Firestore sans authentification utilisateur
-- Ajout de vérifications explicites de l'authentification utilisateur et de l'existence d'un ID de conversation avant toute opération d'écriture dans Firestore
-- Les utilisateurs non connectés peuvent désormais utiliser le chat avec l'API OpenAI sans erreurs
+1. Système de mock pour le calendrier :
+   - Développement de `mock-calendar.ts` qui génère des créneaux disponibles fictifs
+   - Remplacement des appels à l'API Google Calendar par des appels à notre système de mock
 
-### 2. Amélioration de la gestion des variables d'environnement
+2. Correction de l'API de liste des sessions :
+   - Modification de `src/app/api/sessions/list/route.ts` pour retourner des données de test même lorsque l'utilisateur n'est pas authentifié
+   - Cela permet de développer et tester l'application sans avoir besoin d'être connecté
 
-- Déplacement de l'ID de l'assistant OpenAI du code en dur vers une variable d'environnement
-- Ajout de la variable `NEXT_PUBLIC_OPENAI_ASSISTANT_ID` dans le fichier `.env.local`
-- Utilisation de cette variable dans le code avec une valeur par défaut en cas d'absence
-
-### 3. Optimisation du code
-
-- Remplacement des vérifications basées sur `testMode` par des vérifications explicites de `user && currentConversationId`
-- Ajout de logs pour une meilleure traçabilité des opérations
-- Amélioration de la gestion des erreurs
-
-## Configuration requise
-
-Pour que cette version fonctionne correctement, assurez-vous que les variables d'environnement suivantes sont définies dans votre fichier `.env.local` :
-
-```
-# OpenAI Configuration
-OPENAI_API_KEY=votre_clé_api_openai
-NEXT_PUBLIC_OPENAI_ASSISTANT_ID=votre_id_assistant_openai
-```
+3. Mise à jour des routes d'API pour utiliser le système de mock :
+   - Adaptation de `src/app/api/calendar/availability/route.ts` pour utiliser les créneaux générés par le mock
+   - Mise à jour de `src/lib/teacher-service.ts` pour utiliser le système de mock
 
 ## Utilisation
 
-1. Clonez le dépôt
-2. Installez les dépendances avec `npm install`
-3. Configurez les variables d'environnement dans `.env.local`
-4. Lancez l'application avec `npm run dev`
-5. Accédez à l'application via `http://localhost:3000`
+L'application fonctionne maintenant correctement et affiche des sessions fictives, ce qui permet de tester toutes les fonctionnalités sans avoir besoin d'une connexion réelle à Google Calendar ou d'une authentification Firebase.
+
+## Développement futur
+
+Pour continuer à développer l'application :
+1. Ajouter plus de données de test pour simuler différents scénarios
+2. Implémenter l'authentification complète lorsque vous serez prêt à passer en production
+3. Remplacer les mocks par de vraies intégrations avec Google Calendar quand nécessaire
+
+## Dépôt GitHub
+
+Le code de cette version est disponible sur GitHub : https://github.com/elysetech/profpoto-v2
