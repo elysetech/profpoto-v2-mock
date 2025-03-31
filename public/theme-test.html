@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de thème</title>
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 222.2 84% 4.9%;
+      --primary: 221.2 83.2% 53.3%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96.1%;
+      --secondary-foreground: 222.2 47.4% 11.2%;
+      --muted: 210 40% 96.1%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96.1%;
+      --accent-foreground: 222.2 47.4% 11.2%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 221.2 83.2% 53.3%;
+      --radius: 0.5rem;
+    }
+   
+    .dark {
+      --background: 220 20% 15%;
+      --foreground: 210 40% 98%;
+      --card: 220 20% 15%;
+      --card-foreground: 210 40% 98%;
+      --popover: 220 20% 15%;
+      --popover-foreground: 210 40% 98%;
+      --primary: 217.2 91.2% 65%;
+      --primary-foreground: 222.2 47.4% 11.2%;
+      --secondary: 217.2 32.6% 25%;
+      --secondary-foreground: 210 40% 98%;
+      --muted: 217.2 32.6% 25%;
+      --muted-foreground: 215 20.2% 85%;
+      --accent: 217.2 32.6% 25%;
+      --accent-foreground: 210 40% 98%;
+      --destructive: 0 62.8% 40%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 217.2 32.6% 25%;
+      --input: 217.2 32.6% 25%;
+      --ring: 224.3 76.3% 60%;
+    }
+
+    body {
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      background-color: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .theme-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid hsl(var(--border));
+      background-color: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button:hover {
+      background-color: hsl(var(--accent));
+    }
+
+    .active {
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    h1 {
+      color: hsl(var(--primary));
+    }
+
+    p {
+      color: hsl(var(--foreground));
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Test de thème</h1>
+    <div class="theme-toggle">
+      <button id="light-btn" onclick="setTheme('light')" class="active">Clair</button>
+      <button id="dark-btn" onclick="setTheme('dark')">Sombre</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Exemple de contenu</h2>
+    <p>Ce texte devrait changer de couleur en fonction du thème sélectionné.</p>
+  </div>
+
+  <script>
+    function setTheme(theme) {
+      // Remove both classes
+      document.documentElement.classList.remove('light', 'dark');
+      
+      // Add the selected theme class
+      document.documentElement.classList.add(theme);
+      
+      // Save to localStorage
+      localStorage.setItem('theme', theme);
+      
+      // Update button states
+      document.getElementById('light-btn').classList.toggle('active', theme === 'light');
+      document.getElementById('dark-btn').classList.toggle('active', theme === 'dark');
+      
+      console.log('Theme set to:', theme);
+    }
+
+    // Initialize theme from localStorage or default to light
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      setTheme(savedTheme);
+    });
+  </script>
+</body>
+</html>

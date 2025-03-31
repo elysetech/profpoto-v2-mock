@@ -58,110 +58,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
     }
   };
   
-  // Test direct de l'API OpenAI
-  const testOpenAIAPI = async () => {
-    try {
-      console.log("Test de l'API OpenAI...");
-      
-      // Récupérer la clé API depuis le serveur
-      const response = await fetch('/api/ai/test-api', {
-        method: 'GET',
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Erreur API OpenAI: ${error.message || response.statusText}`);
-      }
-      
-      const result = await response.json();
-      console.log("Résultat du test API OpenAI:", result);
-      
-      return result.success;
-    } catch (error: unknown) {
-      console.error("Erreur lors du test API OpenAI:", error);
-      return false;
-    }
-  };
-  
-  // Test de la connexion à Firebase
-  const testFirebaseConnection = async () => {
-    try {
-      console.log("Test de la connexion à Firebase...");
-      
-      const response = await fetch('/api/firebase/test-connection', {
-        method: 'GET',
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Erreur Firebase: ${error.message || response.statusText}`);
-      }
-      
-      const result = await response.json();
-      console.log("Résultat du test Firebase:", result);
-      
-      return result.success;
-    } catch (error: unknown) {
-      console.error("Erreur lors du test Firebase:", error);
-      return false;
-    }
-  };
-  
-  // Test de l'upload vers Firebase Storage
-  const testFirebaseStorage = async () => {
-    try {
-      console.log("Test de l'upload vers Firebase Storage...");
-      setError(null);
-      
-      const response = await fetch('/api/firebase/test-storage', {
-        method: 'GET',
-      });
-      
-      const result = await response.json();
-      console.log("Résultat du test Storage:", result);
-      
-      if (!response.ok || !result.success) {
-        setError(`Erreur Firebase Storage: ${result.message || response.statusText}`);
-        return false;
-      }
-      
-      setError(`Test réussi! Un fichier a été uploadé avec succès. URL: ${result.downloadUrl}`);
-      return true;
-    } catch (error: unknown) {
-      console.error("Erreur lors du test Storage:", error);
-      setError(`Erreur lors du test Storage: ${error instanceof Error ? error.message : "Erreur inconnue"}`);
-      return false;
-    }
-  };
-  
-  // Vérification des règles de sécurité Firebase Storage
-  const checkStorageRules = async () => {
-    try {
-      console.log("Vérification des règles de sécurité Firebase Storage...");
-      setError(null);
-      
-      const response = await fetch('/api/firebase/check-storage-rules', {
-        method: 'GET',
-      });
-      
-      const result = await response.json();
-      console.log("Résultat de la vérification des règles:", result);
-      
-      if (!response.ok || !result.success) {
-        // Afficher l'erreur et la solution
-        setError(`Erreur: ${result.message}\n\nSolution: ${result.solution || "Aucune solution disponible."}`);
-        return false;
-      }
-      
-      setError(`Vérification réussie! Les règles de sécurité Firebase Storage semblent correctement configurées.\n\nRecommandations:\n${result.recommendations.join('\n')}`);
-      return true;
-    } catch (error: unknown) {
-      console.error("Erreur lors de la vérification des règles:", error);
-      setError(`Erreur lors de la vérification des règles: ${error instanceof Error ? error.message : "Erreur inconnue"}`);
-      return false;
-    }
-  };
-  
   // Process the file (upload and direct analysis with gpt-4o)
   const processFile = async () => {
     if (!selectedFile) {
@@ -180,20 +76,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
       setUploadProgress(10);
       
       console.log("Début du traitement du fichier:", selectedFile.name, "Type:", selectedFile.type);
-      
-      // Vérifier si l'API OpenAI est accessible
-      console.log("Vérification de l'API OpenAI...");
-      const apiTest = await testOpenAIAPI();
-      if (!apiTest) {
-        throw new Error("Impossible de se connecter à l'API OpenAI. Veuillez vérifier votre connexion internet et réessayer.");
-      }
-      
-      // Vérifier si Firebase est accessible
-      console.log("Vérification de la connexion à Firebase...");
-      const firebaseTest = await testFirebaseConnection();
-      if (!firebaseTest) {
-        throw new Error("Impossible de se connecter à Firebase. Veuillez vérifier votre connexion internet et réessayer.");
-      }
       
       const fileType: DocumentType = selectedFile.type.startsWith("image/") ? "image" : "pdf";
       console.log("Type de document détecté:", fileType);
@@ -325,12 +207,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
           </p>
           
           <div className="space-y-6">
-            <div className="text-center mb-4">
-              <p className="text-sm text-gray-600 mb-2">
-                <span className="font-medium">Étape 1:</span> Sélectionnez un fichier à analyser
-              </p>
-            </div>
-            
             {!filePreview ? (
               <div className="flex items-center justify-center">
                 <label htmlFor="file-upload" className="w-full">
@@ -355,12 +231,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="text-center mb-2">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Étape 2:</span> Vérifiez l&apos;aperçu et choisissez le type de document ci-dessous
-                  </p>
-                </div>
-                
                 <div className="border border-gray-200 rounded-lg p-4 max-w-md mx-auto">
                   {filePreview === "pdf" ? (
                     <div className="flex items-center justify-center p-4 bg-gray-50 rounded">
@@ -377,12 +247,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
                       className="max-h-64 mx-auto object-contain"
                     />
                   )}
-                </div>
-                
-                <div className="text-center mt-6 mb-2">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Étape 3:</span> Cliquez sur &quot;Analyser le document&quot; pour lancer le traitement
-                  </p>
                 </div>
                 
                 <div className="flex space-x-4">
@@ -440,23 +304,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
             <p className="mt-2 text-xs text-gray-500 pl-7">
               Contenu théorique, définitions, formules, théorèmes, etc.
             </p>
-            
-            {documentType === "lesson" && (
-              <div className="mt-4 pl-7 space-y-2">
-                <p className="text-sm font-medium text-blue-700">Options pour les leçons:</p>
-                <div className="grid grid-cols-1 gap-2">
-                  <button className="text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300">
-                    Créer une fiche de révision
-                  </button>
-                  <button className="text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300">
-                    Extraire les points fondamentaux
-                  </button>
-                  <button className="text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300">
-                    Générer des exercices d&apos;application
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
           
           <div 
@@ -483,23 +330,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
             <p className="mt-2 text-xs text-gray-500 pl-7">
               Problèmes à résoudre, questions, applications pratiques, etc.
             </p>
-            
-            {documentType === "exercise" && (
-              <div className="mt-4 pl-7 space-y-2">
-                <p className="text-sm font-medium text-blue-700">Options pour les exercices:</p>
-                <div className="grid grid-cols-1 gap-2">
-                  <button className="text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300">
-                    Obtenir des indices
-                  </button>
-                  <button className="text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300">
-                    Voir un exercice similaire
-                  </button>
-                  <button className="text-left text-sm px-3 py-2 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300">
-                    Résoudre l&apos;exercice étape par étape
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -512,99 +342,6 @@ export function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
           <li>Documents: PDF</li>
           <li>Taille maximale: 10MB</li>
         </ul>
-      </div>
-      
-      {/* Diagnostic tools */}
-      <div className="border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-4">Outils de diagnostic</h3>
-        <p className="text-gray-500 mb-4">
-          Si vous rencontrez des problèmes, utilisez ces outils pour diagnostiquer la cause.
-        </p>
-        
-        <div className="mb-4">
-          <h4 className="text-md font-medium mb-2">Firebase Storage</h4>
-          <div className="flex flex-col space-y-2">
-            <Button 
-              variant="outline" 
-              onClick={testFirebaseStorage}
-              className="w-full"
-            >
-              Tester l&apos;upload vers Firebase Storage
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              onClick={checkStorageRules}
-              className="w-full"
-            >
-              Vérifier les règles de sécurité Firebase
-            </Button>
-            
-            <a href="/api/firebase/update-storage-rules" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="w-full bg-red-50 hover:bg-red-100 border-red-200 text-red-700"
-              >
-                Obtenir les règles de sécurité recommandées
-              </Button>
-            </a>
-          </div>
-        </div>
-        
-        <div className="mb-4">
-          <h4 className="text-md font-medium mb-2">OpenAI API</h4>
-          <div className="flex flex-col space-y-2">
-            <a href="/api/ai/check-api-key" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="w-full"
-              >
-                Vérifier la clé API OpenAI
-              </Button>
-            </a>
-            
-            <a href="/api/ai/test-model?model=gpt-4o-mini" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="w-full"
-              >
-                Tester le modèle gpt-4o-mini
-              </Button>
-            </a>
-            
-            <a href="/api/ai/test-model?model=gpt-4o" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="w-full"
-              >
-                Tester le modèle gpt-4o
-              </Button>
-            </a>
-            
-            <a href="/api/ai/test-vision" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="w-full bg-green-50 hover:bg-green-100 border-green-200 text-green-700"
-              >
-                Tester l&apos;API Vision avec une image
-              </Button>
-            </a>
-          </div>
-        </div>
-        
-        <div>
-          <h4 className="text-md font-medium mb-2">Guides</h4>
-          <div className="flex flex-col space-y-2">
-            <a href="/firebase-setup" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="w-full bg-blue-50 hover:bg-blue-100 border-blue-200"
-              >
-                Guide de configuration Firebase
-              </Button>
-            </a>
-          </div>
-        </div>
       </div>
       
       {/* Error message */}

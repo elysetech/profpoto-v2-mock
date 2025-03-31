@@ -35,13 +35,43 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function fetchDocument() {
       try {
-        const docRef = doc(db, "documents", documentId);
-        const docSnap = await getDoc(docRef);
+        // Essayer d'abord de récupérer depuis Firestore
+        try {
+          const docRef = doc(db, "documents", documentId);
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            setDocument(docSnap.data() as DocumentData);
+            setLoading(false);
+            return;
+          }
+        } catch (firestoreErr) {
+          console.error("Firestore error:", firestoreErr);
+          // Continuer avec le mock si Firestore échoue
+        }
         
-        if (docSnap.exists()) {
-          setDocument(docSnap.data() as DocumentData);
+        // Si le document n'existe pas dans Firestore ou si une erreur s'est produite,
+        // utiliser l'API mock
+        const response = await fetch(`/api/mock-document?id=${documentId}`);
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération du document');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.document) {
+          // Convertir la date string en objet Timestamp
+          const mockDocument = {
+            ...data.document,
+            createdAt: {
+              toDate: () => new Date(data.document.createdAt)
+            }
+          };
+          
+          setDocument(mockDocument as unknown as DocumentData);
         } else {
-          setError("Document non trouvé");
+          throw new Error('Format de réponse invalide');
         }
       } catch (err) {
         console.error("Error fetching document:", err);
