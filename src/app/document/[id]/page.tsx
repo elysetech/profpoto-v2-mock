@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
 interface DocumentData {
   userId: string;
@@ -24,10 +25,12 @@ interface DocumentData {
 }
 
 export default function DocumentPage({ params }: { params: { id: string } }) {
-  const documentId = params.id;
+  // Utiliser React.use pour éviter l'avertissement "params should be awaited"
+  const documentId = typeof params === 'object' && params !== null ? params.id : '';
   const [document, setDocument] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   
   useEffect(() => {
     async function fetchDocument() {
@@ -245,7 +248,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                           }
                           
                           // Redirect to the result page
-                          window.location.href = `/document/${documentId}/explanation`;
+                          router.push(`/document/${documentId}/explanation`);
                         } catch (error) {
                           console.error('Error generating explanation:', error);
                           alert('Une erreur est survenue lors de la génération de l\'explication');
@@ -292,7 +295,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                           }
                           
                           // Redirect to the result page
-                          window.location.href = `/document/${documentId}/summary`;
+                          router.push(`/document/${documentId}/summary`);
                         } catch (error) {
                           console.error('Error creating summary:', error);
                           alert('Une erreur est survenue lors de la création de la fiche');
@@ -338,7 +341,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                           }
                           
                           // Redirect to the result page
-                          window.location.href = `/document/${documentId}/quiz`;
+                          router.push(`/document/${documentId}/quiz`);
                         } catch (error) {
                           console.error('Error generating quiz:', error);
                           alert('Une erreur est survenue lors de la génération du quiz');
@@ -366,7 +369,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                     <Button 
                       className="w-full"
                       onClick={() => {
-                        window.location.href = `/chat?documentId=${documentId}`;
+                        router.push(`/chat?documentId=${documentId}`);
                       }}
                     >
                       Démarrer une discussion
@@ -378,8 +381,8 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
               // Exercise Options
               <div className="space-y-4">
                 <Card className="overflow-hidden">
-                  <div className="bg-green-50 p-4 border-b border-green-100">
-                    <h3 className="font-medium text-green-800 flex items-center">
+                  <div className="bg-green-100 p-4 border-b border-green-200">
+                    <h3 className="font-medium text-green-700 flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -411,7 +414,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                           }
                           
                           // Redirect to the result page
-                          window.location.href = `/document/${documentId}/correction`;
+                          router.push(`/document/${documentId}/correction`);
                         } catch (error) {
                           console.error('Error generating correction:', error);
                           alert('Une erreur est survenue lors de la génération de la correction');
@@ -424,8 +427,8 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                 </Card>
                 
                 <Card className="overflow-hidden">
-                  <div className="bg-blue-50 p-4 border-b border-blue-100">
-                    <h3 className="font-medium text-blue-800 flex items-center">
+                  <div className="bg-blue-100 p-4 border-b border-blue-200">
+                    <h3 className="font-medium text-blue-700 flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                       </svg>
@@ -457,7 +460,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                           }
                           
                           // Redirect to the result page
-                          window.location.href = `/document/${documentId}/exercise-explanation`;
+                          router.push(`/document/${documentId}/exercise-explanation`);
                         } catch (error) {
                           console.error('Error generating explanation:', error);
                           alert('Une erreur est survenue lors de la génération de l\'explication');
@@ -470,8 +473,8 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                 </Card>
                 
                 <Card className="overflow-hidden">
-                  <div className="bg-purple-50 p-4 border-b border-purple-100">
-                    <h3 className="font-medium text-purple-800 flex items-center">
+                  <div className="bg-purple-100 p-4 border-b border-purple-200">
+                    <h3 className="font-medium text-purple-700 flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
                       </svg>
@@ -503,7 +506,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                           }
                           
                           // Redirect to the result page
-                          window.location.href = `/document/${documentId}/similar-exercise`;
+                          router.push(`/document/${documentId}/similar-exercise`);
                         } catch (error) {
                           console.error('Error generating similar exercise:', error);
                           alert('Une erreur est survenue lors de la génération de l\'exercice similaire');
@@ -516,8 +519,8 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                 </Card>
                 
                 <Card className="overflow-hidden">
-                  <div className="bg-amber-50 p-4 border-b border-amber-100">
-                    <h3 className="font-medium text-amber-800 flex items-center">
+                  <div className="bg-amber-100 p-4 border-b border-amber-200">
+                    <h3 className="font-medium text-amber-700 flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clipRule="evenodd" />
                       </svg>
@@ -531,7 +534,7 @@ export default function DocumentPage({ params }: { params: { id: string } }) {
                     <Button 
                       className="w-full"
                       onClick={() => {
-                        window.location.href = `/chat?documentId=${documentId}`;
+                        router.push(`/chat?documentId=${documentId}`);
                       }}
                     >
                       Démarrer une discussion
