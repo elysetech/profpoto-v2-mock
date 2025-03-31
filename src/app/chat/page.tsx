@@ -592,28 +592,8 @@ export default function ChatPage() {
             
             <Card className="flex-grow flex flex-col overflow-hidden border border-gray-200">
               {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-4">
-                  <h2 className="text-2xl font-semibold mb-6 text-center">Comment puis-je vous aider ?</h2>
-                  <div className="max-w-md w-full">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer shadow-sm">
-                        <h3 className="font-medium mb-1">Besoin d&apos;aide pour résoudre un problème ?</h3>
-                        <p className="text-sm text-gray-500">Je peux t&apos;aider avec tes exercices</p>
-                      </div>
-                      <div className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer shadow-sm">
-                        <h3 className="font-medium mb-1">Je peux t&apos;expliquer des notions complexes</h3>
-                        <p className="text-sm text-gray-500">Demande-moi n&apos;importe quel concept</p>
-                      </div>
-                      <div className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer shadow-sm">
-                        <h3 className="font-medium mb-1">Je t&apos;aide à réviser efficacement</h3>
-                        <p className="text-sm text-gray-500">Préparation d&apos;examens et contrôles</p>
-                      </div>
-                      <div className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer shadow-sm">
-                        <h3 className="font-medium mb-1">Demande-moi des exercices adaptés</h3>
-                        <p className="text-sm text-gray-500">Pratique avec des exercices sur mesure</p>
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-center h-full p-4">
+                  <h2 className="text-2xl font-semibold text-center">Comment puis-je vous aider ?</h2>
                 </div>
               ) : (
                 <div className="flex-grow overflow-y-auto p-4 space-y-6">
